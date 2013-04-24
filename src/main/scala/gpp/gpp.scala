@@ -29,7 +29,8 @@ object Opts {
     "tokensntags" -> TokensnTags,
     "tagbigrams" -> TagBigrams,
     "tokenbigrams" -> TokenBigrams,
-    "MPQA" -> MPQALex
+    "MPQA" -> MPQALex,
+    "numbers" -> Numbers
   )
   val version = "0.0.0"
 
