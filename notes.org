@@ -2,13 +2,16 @@
 #+TITLE: anlp homework #5
 #+OPTIONS: *:nil
 #+OPTIONS: toc:nil
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage{savetrees
 
 * Supervised models
 ** BOW
 *** Debate corpus
 with cost 0.6
 
-#+BEGIN_SRC
+#+BEGIN_LATEX
+\begin{verbatim}
 --------------------------------------------------------------------------------
 Confusion matrix.
 Columns give predicted counts. Rows give gold counts.
@@ -29,10 +32,12 @@ P	R	F
 64.56	51.00	56.98	positive
 ...................................
 59.22	54.69	56.23	Average
-#+END_SRC
+\end{verbatim}
+#+END_LATEX
 *** HCR corpus
 with cost 0.5
-#+BEGIN_SRC
+#+BEGIN_LATEX
+\begin{verbatim}
 --------------------------------------------------------------------------------
 Confusion matrix.
 Columns give predicted counts. Rows give gold counts.
@@ -59,7 +64,8 @@ P	R	F
 0.00	0.00	0.00	unsure
 ...................................
 25.18	24.80	24.75	Average
-#+END_SRC
+\end{verbatim}
+#+END_LATEX
 
 ** Extended Features
 The features can be toggled individually, see the `-f` flag.
@@ -97,7 +103,8 @@ The corpus does not contain that much emphasized speech, like
 ** Results
 *** Debate
 I wasn't able to beat your scores. 
-#+BEGIN_QUOTE
+#+BEGIN_LATEX
+\begin{verbatim}
 --------------------------------------------------------------------------------
 Confusion matrix.
 Columns give predicted counts. Rows give gold counts.
@@ -118,10 +125,12 @@ P	R	F
 68.84	47.50	56.21	positive
 ...................................
 62.49	54.14	56.25	Average
-#+END_QUOTE
+\end{verbatim}
+#+END_LATEX
 
 *** HCR
-#+BEGIN_QUOTE
+#+BEGIN_LATEX
+\begin{verbatim}
 --------------------------------------------------------------------------------
 Confusion matrix.
 Columns give predicted counts. Rows give gold counts.
@@ -148,7 +157,8 @@ P	R	F
 0.00	0.00	0.00	unsure
 ...................................
 25.28	25.49	25.25	Average
-#+END_QUOTE
+\end{verbatim}
+#+END_LATEX
 
 * Stanford
 In average, there are more negative than positive tweets in the
@@ -157,7 +167,8 @@ The Stanford corpus has more positive samples. As seen in the
 confusion matrix, the classifier seldom mistakes a negative for a
 positive tweet, but the other way round is very likely.
 
-#+BEGIN_QUOTE
+#+BEGIN_LATEX
+\begin{verbatim}
 --------------------------------------------------------------------------------
 0	0	0	0	|	0	irrelevant
 0	53	15	7	|	75	negative
@@ -166,7 +177,8 @@ positive tweet, but the other way round is very likely.
 --------------------------------
 1	101	53	61
 irrelevant negative neutral positive
-#+END_QUOTE
+\end{verbatim}
+#+END_LATEX
 
 * Noisy Labels
 With the HCR dataset, the lexicon-based classifier beats the
@@ -199,9 +211,9 @@ the difference in style mentioned in the previous paragraph.
 * Results
 Those were taken with
 
-#+BEGIN_SRC
+#+BEGIN_QUOTE
 -f tokens tags tokensntags numbers MPQAcomplex tokenbigrams tagbigrams
-#+END_SRC
+#+END_QUOTE
 
 #+CAPTION: Outputs for hcr dev set
 | Model      | Training | Cost | Overall | Negative | Neutral | Positive | Average |
@@ -234,7 +246,7 @@ Some labels are also questionable, this tweet was labeled as positive
 mccain as president= torture #current #debate08
 #+END_QUOTE
 
-** Positive mistaken as Negative
+*** Positive mistaken as Negative
 This is correctly negative, wrong gold label.
 #+BEGIN_QUOTE
 Okay, this is a done deal. Anybody knows a good spot to watch the end of the world, before things go back to normal tomorrow? #hcr
@@ -254,3 +266,103 @@ Looks rather negative to me, I'd sort this as `negative'.
 #+BEGIN_QUOTE
 Our Beloved President Ronald Reagen Is Rolling In his Grave..#teaparty #tcot #gop #hcr
 #+END_QUOTE
+
+Clearly positive, the classifier should have gotten that one.
+#+BEGIN_QUOTE
+Excellent speech by Connie Mack of Florida!!!! ''The American people deserve to be listened to''!!! #p2 #tcot #hcr
+#+END_QUOTE
+
+This one as well.
+#+BEGIN_QUOTE
+Gergen: Democrats have been dreaming of this for 60yrs. Obama now has a legacy. First president to achieve near universal coverage. #p2 #hcr
+#+END_QUOTE
+
+Sarcasm. Should be labeled as negative IMO.
+#+BEGIN_QUOTE
+Um... a bill that supports the for-profit status quo without even a public option to compete is socialized medicine? Get a grip #tcot #hcr
+#+END_QUOTE
+
+A positive one. *kicks classifier*
+#+BEGIN_QUOTE
+After this passes, Pelosi goes down as one of the top 3 most powerful Speakers in American history. Stimulus, Cap & Trade, 2 #hcr in 1 year.
+#+END_QUOTE
+
+Another instance of beautiful sarcasm.
+#+BEGIN_QUOTE
+i mourn for the future of america when i see how miserable and oppressed the swedes, japanese, and germans are. wait... #hcr
+#+END_QUOTE
+
+I think the `not' plays a role here.
+#+BEGIN_QUOTE
+Dear President Obama, Thank you for not giving up. #hcr
+#+END_QUOTE
+
+A lot of neutral, then a bit positive. Maybe something in the neutral
+part tripped the classifier.
+#+BEGIN_QUOTE
+Guys, just got back from my accountant's who is a small business owner. He supports #HCR #p2
+#+END_QUOTE
+
+*** Negative mistaken as Positive
+A bunch of positive indicators, like `feel' and `good'. And the
+second sentence is the indicator, not so easy to grab that. 
+#+BEGIN_QUOTE
+Don't vote ''yes'' because you feel it's good for America. Vote ''yes'' b/c you were bribed or lied to, having not read the bill yourself. #hcr
+#+END_QUOTE
+
+A bit of sarcasm mixed with just a few negative words. Very hard for
+a classifier as simple as this one.
+#+BEGIN_QUOTE
+A further loss of liberty is upon us as the nimrods in Washington vote on #hcr. Enjoy your freedom while you can...
+#+END_QUOTE
+
+Another last-sentence-turner.
+#+BEGIN_QUOTE
+Think of #hcr as a desk from Ikea. At first it's nice and easy to assemble, but then it scratches! #shelleymoorecapitoanalogies
+#+END_QUOTE
+
+Only positive words, combined negative. This would require a
+fixed-clause lexicon.
+#+BEGIN_QUOTE
+Its time to clean HOUSE! #hcr #tcot
+#+END_QUOTE
+
+Strange. I can't explain this one.
+#+BEGIN_QUOTE
+Shut up John Boehner. #hcr
+#+END_QUOTE
+
+I see strongly negative words in here. Should have gotten this one.
+#+BEGIN_QUOTE
+RT @mcjusa: EVERY SINGLE ONE OF THESE SELF RIGHTEOUS WHORES EXEMPTED THEMSELVES FROM THIS WONDERFUL #HCR LAST NITE Heloooooooo #p2#hcrWAKEUP
+#+END_QUOTE
+
+Maybe a stemmer for `lies` would help here.
+#+BEGIN_QUOTE
+Jeb Hebsarling just crammed 20 lies into 2 minutes. #hcr
+#+END_QUOTE
+
+Oh, reference to cultural signs. That's hard to resolve. Why doesn't
+anyone like the French around here? :-(
+#+BEGIN_QUOTE
+RT @Dataaide:  @Howardman1: The French called &want the statue of liberty back!! @foxandfriends @txjogger12 @grettawire #hcr // LOL
+#+END_QUOTE
+
+Positive first sentence and the second one isn't clearly negative either.
+#+BEGIN_QUOTE
+Rep. Rahall's phone lines are now working! - Call him and tell him what you think about his YES vote on #HCR. | 202-225-3452 #WV03
+#+END_QUOTE
+
+*** Negative mistaken as neutral
+All caps as feature would have helped on this one, at least to put it
+either to positive or negative.
+#+BEGIN_QUOTE
+RECONCILIATION ``FIX'' BLOCKED BY LAW @kendrickbmeek @gregorymeeks #tweetcongress #hcr http://bit.ly/CannotReconcile
+#+END_QUOTE
+
+
+** Additional Strategies
+I assume a stemmer, preferably designed for Twitter, would help here.
+Also a `not' inverting the statement should be its own feature
+somehow. A sarcasm detector is damn hard to do, but would help as
+well.
