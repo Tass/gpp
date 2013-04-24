@@ -9,7 +9,6 @@ class Lexicon() extends Model {
     val tagged = gpp.util.POSTagger(ex.features)
     val values = tagged.flatMap(gpp.util.MPQA.apply)
     values.sum/values.size match {
-      case _ if values.size == 0 => "undecided"
       case x if x < -threshold => "negative"
       case x if x > threshold => "positive"
       case x => "neutral"

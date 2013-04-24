@@ -44,8 +44,16 @@ object TokenBigrams extends Feature {
   def apply(parsed: List[util.Token]): Iterable[String] = parsed.sliding(2).map(list => list.map(_.token.toLowerCase).mkString("bigramTokens=", "+", "")).toIterable
 }
 
-object MPQALex extends Feature {
-  def apply(parsed: List[util.Token]): Iterable[String] = parsed.map(util.MPQA(_).map(_.toString)).flatten
+object MPQASimple extends Feature {
+  def apply(parsed: List[util.Token]): Iterable[String] = parsed.map(util.MPQA(_).map({
+    case x if x < 0 => "MPQA=negative"
+    case x if x > 0 => "MPQA=positive"
+    case _ => "MPQA=neutral"
+  })).flatten
+}
+
+object MPQAComplex extends Feature {
+  def apply(parsed: List[util.Token]): Iterable[String] = parsed.map(util.MPQA(_).map("MPQA=" + _.toString)).flatten
 }
 
 object Numbers extends Feature {

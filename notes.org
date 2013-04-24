@@ -71,7 +71,9 @@ includes all emoticons.
 The tags provided by the ARK Tagger, because it's a low hanging fruit.
 *** MPQA
 The lexicon used in the previous problem. This helps with words not
-previously encountered.
+previously encountered. There's two versions, one that include
+weak/strong subjectivity and one that doesn't. I recommend not
+enabling both, but `-x` will do that.
 *** Bigrams
 Bigrams of Tokens and Tags.
 *** Numbers
@@ -82,3 +84,173 @@ Obama +2 For port security #tweetdebate
 #+END_QUOTE
 
 Indicates the presence of a positive/negative number.
+
+*** Emoticons?
+I considered using features such as emoticons, but they don't really
+occur in either the hcr or the debate dataset. They are parsed by
+ARK, but not grouped into positive/negative.
+
+*** Twitter-specific stemming?
+The corpus does not contain that much emphasized speech, like
+`loooove', it is mostly grammatical, unlike the SMS corpus.
+
+** Results
+*** Debate
+I wasn't able to beat your scores. 
+#+BEGIN_QUOTE
+--------------------------------------------------------------------------------
+Confusion matrix.
+Columns give predicted counts. Rows give gold counts.
+--------------------------------------------------------------------------------
+393	26	35	|	454	negative
+93	40	8	|	141	neutral
+92	13	95	|	200	positive
+----------------------------
+578	79	138
+negative neutral positive
+
+--------------------------------------------------------------------------------
+		66.42	Overall accuracy
+--------------------------------------------------------------------------------
+P	R	F
+67.99	86.56	76.16	negative
+50.63	28.37	36.36	neutral
+68.84	47.50	56.21	positive
+...................................
+62.49	54.14	56.25	Average
+#+END_QUOTE
+
+*** HCR
+#+BEGIN_QUOTE
+--------------------------------------------------------------------------------
+Confusion matrix.
+Columns give predicted counts. Rows give gold counts.
+--------------------------------------------------------------------------------
+0	0	1	0	0	0	|	1	
+0	0	21	3	3	0	|	27	irrelevant
+0	0	341	69	54	0	|	464	negative
+0	0	76	68	17	0	|	161	neutral
+0	0	92	16	64	0	|	172	positive
+0	0	8	2	3	0	|	13	unsure
+------------------------------------------------
+0	0	539	158	141	0
+ irrelevant negative neutral positive unsure
+
+--------------------------------------------------------------------------------
+		56.44	Overall accuracy
+--------------------------------------------------------------------------------
+P	R	F
+0.00	0.00	0.00	
+0.00	0.00	0.00	irrelevant
+63.27	73.49	68.00	negative
+43.04	42.24	42.63	neutral
+45.39	37.21	40.89	positive
+0.00	0.00	0.00	unsure
+...................................
+25.28	25.49	25.25	Average
+#+END_QUOTE
+
+* Stanford
+In average, there are more negative than positive tweets in the
+training corpora (is this a sign that politics is blaming others?).
+The Stanford corpus has more positive samples. As seen in the
+confusion matrix, the classifier seldom mistakes a negative for a
+positive tweet, but the other way round is very likely.
+
+#+BEGIN_QUOTE
+--------------------------------------------------------------------------------
+0	0	0	0	|	0	irrelevant
+0	53	15	7	|	75	negative
+0	11	16	6	|	33	neutral
+1	37	22	48	|	108	positive
+--------------------------------
+1	101	53	61
+irrelevant negative neutral positive
+#+END_QUOTE
+
+* Noisy Labels
+With the HCR dataset, the lexicon-based classifier beats the
+machine-learning one (cost of 0.7). At leas the ML classifier is
+better than the majority one. The same happens with the Debate
+dataset. I assume a twitter-specialized stemmer would be of help here,
+maybe even a generic Stanford Stemmer.
+
+#+CAPTION: Accuracy
+|          | Lexicon | Supervised | Majority |
+|----------+---------+------------+----------|
+| debate08 |   36.48 |      27.30 |    25.16 |
+| hcr      |   36.99 |      31.50 |    20.53 |
+
+#+CAPTION: F-Score
+|          | Lexicon | Supervised | Majority |
+|----------+---------+------------+----------|
+| debate08 |   25.77 |      27.30 |    13.40 |
+| hcr      |   15.52 |      14.63 |     5.68 |
+
+Also interesting to observe are the confusion matrices, which indicate
+that the ML classifier has a bias towards neutral. I suspect this is
+because tweets with emoticons in them tend to correlate with less
+formal style, as found in the debate/hcr tweets.
+
+Even adding the other training data (hcr for debate) lifts the ML
+classifier over the lexicon-based one. I suspect this combines with
+the difference in style mentioned in the previous paragraph.
+
+* Results
+Those were taken with
+
+#+BEGIN_SRC
+-f tokens tags tokensntags numbers MPQAcomplex tokenbigrams tagbigrams
+#+END_SRC
+
+#+CAPTION: Outputs for hcr dev set
+| Model      | Training | Cost | Overall | Negative | Neutral | Positive | Average |
+|------------+----------+------+---------+----------+---------+----------+---------|
+| Lexicon    |          |      |   39.86 |    51.32 |   29.25 |    34.15 |   19.12 |
+| L2R_LR (B) | hcr      |  0.6 |   55.97 |    67.51 |   41.72 |    39.23 |   24.74 |
+| L2R_LR (E) | hcr      |  0.6 |   56.44 |    67.93 |   42.63 |    41.03 |   25.26 |
+
+#+CAPTION: Outputs for debate dev set
+| Model      | Training | Cost | Overall | Negative | Neutral | Positive | Average |
+|------------+----------+------+---------+----------+---------+----------+---------|
+| Lexicon    |          |      |   41.64 |    51.56 |   27.27 |    38.22 |   39.02 |
+| L2R_LR (B) | debate08 | 0.6  |   64.28 |    73.35 |   38.37 |    56.98 |   56.23 |
+| L2R_LR (E) | debate08 | 0.6  |   66.42 |    76.16 |   36.36 |    56.21 |   56.25 |
+
+The average for the extended is so bad because it has one tweet tagged
+as `irrelevant'. The basic one has `irrelevant' and `unsure'.
+#+CAPTION: Outputs for stanford dev set
+| Model      | Training     | Cost | Overall | Negative | Neutral | Positive | Average |
+|------------+--------------+------+---------+----------+---------+----------+---------|
+| Lexicon    |              |      |   57.87 |    61.76 |   40.37 |    65.24 |   55.79 |
+| L2R_LR (B) | debate08/hcr |  0.6 |   54.17 |    54.88 |   34.29 |    61.54 |   30.14 |
+| L2R_LR (E) | debate08/hcr |  0.6 |   54.17 |    60.23 |   37.21 |    56.80 |   38.56 |
+
+
+** Detailed analysis
+Some labels are also questionable, this tweet was labeled as positive
+(from the training set).
+#+BEGIN_QUOTE
+mccain as president= torture #current #debate08
+#+END_QUOTE
+
+** Positive mistaken as Negative
+This is correctly negative, wrong gold label.
+#+BEGIN_QUOTE
+Okay, this is a done deal. Anybody knows a good spot to watch the end of the world, before things go back to normal tomorrow? #hcr
+#+END_QUOTE
+
+I'm not sure about this one, this seems negative to me.
+#+BEGIN_QUOTE
+Why don't the people against #HCR just confess to the fact that they are in love with the idea of genocide?
+#+END_QUOTE
+
+Vision is a positive word, I wonder why it didn't order this one correctly.
+#+BEGIN_QUOTE
+Roosevelt had the vision, Clinton attempted it, Obama will execute it #hcr
+#+END_QUOTE
+
+Looks rather negative to me, I'd sort this as `negative'.
+#+BEGIN_QUOTE
+Our Beloved President Ronald Reagen Is Rolling In his Grave..#teaparty #tcot #gop #hcr
+#+END_QUOTE
