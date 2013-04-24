@@ -16,7 +16,8 @@ object Opts {
   import org.rogach.scallop._
   val methods = Map[String, Method](
     "majority" -> Majority,
-    "lexicon" -> Lexicon
+    "lexicon" -> Lexicon,
+    "L2R_LR" -> Supervised
   )
   val version = "0.0.0"
 
@@ -43,9 +44,8 @@ object Exp {
     val opts = Opts(args)
     val method = Opts.methods(opts.method())
     val trainEx = parseXML(opts.train())
-    val model = method(new Featurizer[String, String] {
-      def apply(input: String) = List()
-    }, trainEx, opts.cost())
+    val featurizer = SimpleFeatures
+    val model = method(featurizer, trainEx, opts.cost())
     val evalEx = parseXML(opts.eval())
     val results = evalEx.map(model)
     println(ConfusionMatrix(evalEx.map(_.label), results, evalEx.map(_.features)))

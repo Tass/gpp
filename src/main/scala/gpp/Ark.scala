@@ -1,4 +1,4 @@
-package gpp
+package gpp.util
 
 case class Token(token: String, tag: String)
 object POSTagger {
