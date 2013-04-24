@@ -15,7 +15,8 @@ trait Method {
 object Opts {
   import org.rogach.scallop._
   val methods = Map[String, Method](
-    "majority" -> Majority
+    "majority" -> Majority,
+    "lexicon" -> Lexicon
   )
   val version = "0.0.0"
 

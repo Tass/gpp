@@ -11,5 +11,6 @@ libraryDependencies ++= Seq(
   "org.scalanlp" % "chalk" % "1.1.3-SNAPSHOT",
   "org.rogach" %% "scallop" % "0.8.1",
   "no.arktekk" %% "anti-xml" % "0.5.1",
-  "org.reactormonk" %% "counter" % "1.2.0"
+  "org.reactormonk" %% "counter" % "1.2.0",
+  "edu.cmu.cs" % "ark-tweet-nlp" % "0.3.2"
 )
