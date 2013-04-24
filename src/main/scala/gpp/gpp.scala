@@ -13,7 +13,7 @@ trait Method {
 }
 
 trait Feature {
-  def apply(parsed: List[util.Token]): List[FeatureObservation[String]]
+  def apply(parsed: List[util.Token]): Iterable[String]
 }
 
 object Opts {
