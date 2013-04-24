@@ -1,0 +1,84 @@
+#+AUTHOR: Simon Hafner
+#+TITLE: anlp homework #5
+#+OPTIONS: *:nil
+#+OPTIONS: toc:nil
+
+* Supervised models
+** BOW
+*** Debate corpus
+with cost 0.6
+
+#+BEGIN_SRC
+--------------------------------------------------------------------------------
+Confusion matrix.
+Columns give predicted counts. Rows give gold counts.
+--------------------------------------------------------------------------------
+362	44	48	|	454	negative
+86	47	8	|	141	neutral
+85	13	102	|	200	positive
+----------------------------
+533	104	158
+negative neutral positive
+
+--------------------------------------------------------------------------------
+		64.28	Overall accuracy
+--------------------------------------------------------------------------------
+P	R	F
+67.92	79.74	73.35	negative
+45.19	33.33	38.37	neutral
+64.56	51.00	56.98	positive
+...................................
+59.22	54.69	56.23	Average
+#+END_SRC
+*** HCR corpus
+with cost 0.5
+#+BEGIN_SRC
+--------------------------------------------------------------------------------
+Confusion matrix.
+Columns give predicted counts. Rows give gold counts.
+--------------------------------------------------------------------------------
+0	0	1	0	0	0	|	1	
+0	0	18	5	4	0	|	27	irrelevant
+0	0	347	61	56	0	|	464	negative
+0	0	86	63	12	0	|	161	neutral
+0	0	102	10	60	0	|	172	positive
+0	0	9	1	3	0	|	13	unsure
+------------------------------------------------
+0	0	563	140	135	0
+ irrelevant negative neutral positive unsure
+
+--------------------------------------------------------------------------------
+		56.09	Overall accuracy
+--------------------------------------------------------------------------------
+P	R	F
+0.00	0.00	0.00	
+0.00	0.00	0.00	irrelevant
+61.63	74.78	67.58	negative
+45.00	39.13	41.86	neutral
+44.44	34.88	39.09	positive
+0.00	0.00	0.00	unsure
+...................................
+25.18	24.80	24.75	Average
+#+END_SRC
+
+** Extended Features
+The features can be toggled individually, see the `-f` flag.
+*** Tokens
+As used in the basic BoW classifier. I don't filter any tokens here,
+the ARK POSTagger splits the tweet and prepares the tokens. It also
+includes all emoticons.
+*** Tags
+The tags provided by the ARK Tagger, because it's a low hanging fruit.
+*** MPQA
+The lexicon used in the previous problem. This helps with words not
+previously encountered.
+*** Bigrams
+Bigrams of Tokens and Tags.
+*** Numbers
+Used in the debate as follows:
+
+#+BEGIN_QUOTE
+Obama +2 For port security #tweetdebate
+#+END_QUOTE
+
+Indicates the presence of a positive/negative number.
